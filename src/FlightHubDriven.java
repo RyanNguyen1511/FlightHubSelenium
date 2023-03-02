@@ -48,6 +48,8 @@ public class FlightHubDriven {
     GetLocation();
     datePicker();
 
+    driver.findElement(By.id("btn-search-flight")).click();
+
   }
 
   public static void initializeWebDriver() throws InterruptedException {
@@ -128,8 +130,7 @@ public class FlightHubDriven {
 
     getMonth = driver.findElement(By.xpath("//div[@class = 'ui-datepicker-inline ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all']//span[@class = 'ui-datepicker-month']"));
 
-    while (!monthMap.get(dataDepartureDate.substring(3, 5)).equalsIgnoreCase(getMonth.getText())) {
-      System.out.println("Tuan Nguyen 01");
+    while (!monthMap.get(dataReturnDate.substring(3, 5)).equalsIgnoreCase(getMonth.getText())) {
       driver.findElement(By.xpath("//div[@class = 'ui-datepicker-inline ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all']//a[@data-handler = 'next']")).click();
       Thread.sleep(1000);
       try {
