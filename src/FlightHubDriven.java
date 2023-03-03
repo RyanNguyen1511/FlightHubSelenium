@@ -48,10 +48,10 @@ public class FlightHubDriven {
     dataReturnDate = dataHolder.getReturnDate();
 
     initializeWebDriver();
-    GetLocation();
-    datePicker();
-    clickAndWaitFlightSearchLoading();
-
+//    GetLocation();
+//    datePicker();
+//    clickAndWaitFlightSearchLoading();
+    listCheapestFlight();
 
   }
 
@@ -59,11 +59,13 @@ public class FlightHubDriven {
     // initialize web driver with Chrome
     System.getProperty("webdriver.chrome.driver", "S:\\PERSONAL\\STUDY\\chromedriver.exe ");
     driver = new ChromeDriver();
-    driver.navigate().to("https://www.flighthub.com/");
+//    driver.navigate().to("https://www.flighthub.com/");
+    driver.navigate().to("https://www.flighthub.com/flight/search?num_adults=1&num_children=0&num_infants=0&num_infants_lap=0&seat_class=Economy&seg0_date=2023-03-12&seg0_from=YKA&seg0_to=YVR&seg1_date=2023-04-23&seg1_from=YVR&seg1_to=YKA&type=roundtrip&search_id=14a926cae2cc9723783ee2822a124abf");
     driver.manage().deleteAllCookies();
-    driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+//    driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
     driver.manage().window().maximize();
-    Thread.sleep(3000);
+    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(40));
+    wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//div[@class = 'container-progress-bar']")));
   }
 
   public static void GetLocation() throws InterruptedException {
@@ -179,6 +181,50 @@ public class FlightHubDriven {
 
     // WebElement selectbutton =
     driver.findElement(By.xpath("//a[@class = 'tab-btn cheapest']")).click();
+  }
+
+  public static void listCheapestFlight(){
+    WebElement flightpackages = driver.findElement(By.xpath("//ul[@class = 'exp-container-flight-package']"));
+    List<WebElement> flight = flightpackages.findElements(By.cssSelector("li"));
+
+    WebElement totalprice;
+    WebElement DepartureTime;
+    WebElement ReturnArrivalTime;
+    WebElement DepartureDate;
+    WebElement ReturnArrivalDate;
+    WebElement DeparturePlace;
+    WebElement ReturnPlace;
+    WebElement linkdetail;
+    for (WebElement list: flight){
+      //LOCATE variable
+      totalprice = list.findElement(By.xpath("//span[@class = 'total-price']"));
+
+      DepartureTime = list.findElement(By.xpath("//li[@class = 'flight-time'][1]"));
+      ReturnArrivalTime = list.findElement(By.xpath("//div[@class = 'package-details-box flightDetails ']//div[@class = 'city-pair '][last()]//div[contains(@class, 'faredetails display-table')][last()]//li[@class = 'flight-time'][last()]"));
+
+      DepartureDate = list.findElement(By.xpath("//li[@class = 'flight-date '][1]"));
+      ReturnArrivalDate = list.findElement(By.xpath("//div[@class = 'package-details-box flightDetails ']//div[@class = 'city-pair '][last()]//div[contains(@class, 'faredetails display-table')][last()]//li[@class = 'flight-date'][last()]"));
+
+      DeparturePlace = list.findElement(By.xpath("//span[@class = 'hide-on-mobile'][1]"));
+      ReturnPlace = list.findElement(By.xpath("//div[@class = 'package-details-box flightDetails ']//div[@class = 'city-pair '][last()]//div[contains(@class, 'faredetails display-table')][last()]//ul[last()]//span[@class = 'hide-on-mobile']"));
+
+      linkdetail = list.findElement(By.xpath("//a[@class = 'package-select']"));
+
+      System.out.println("------------------------------------- ");
+      System.out.println("DEPARTURE: ");
+      System.out.println("Departure Location: " + DeparturePlace.getText());
+      System.out.println("Departure Day: " + DepartureDate.getText());
+      System.out.println("Departure Time: " + DepartureTime.getText());
+      System.out.println("RETURN: ");
+      System.out.println("Return Location: " + ReturnPlace.getText());
+      System.out.println("Return Day: " + ReturnArrivalDate.getText());
+      System.out.println("Return Time: " + ReturnArrivalTime.getText());
+      System.out.println("OVERVIEW: ");
+      System.out.println("Total Price: " + totalprice.getText());
+      System.out.println("Link detail: " + linkdetail.getAttribute("href"));
+//      System.out.println("Text: " + list.getText());
+
+    }
   }
 
 }
