@@ -3,10 +3,13 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import javax.xml.crypto.Data;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.time.Duration;
 import java.time.Month;
 import java.util.HashMap;
 import java.util.List;
@@ -47,8 +50,8 @@ public class FlightHubDriven {
     initializeWebDriver();
     GetLocation();
     datePicker();
+    clickAndWaitFlightSearchLoading();
 
-    driver.findElement(By.id("btn-search-flight")).click();
 
   }
 
@@ -104,6 +107,7 @@ public class FlightHubDriven {
     departureDate.click();
     Thread.sleep(2000);
 
+    yearCheck();
     WebElement getMonth = driver.findElement(By.xpath("//div[@class = 'ui-datepicker-inline ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all']//span[@class = 'ui-datepicker-month']"));
 
     while (!monthMap.get(dataDepartureDate.substring(3, 5)).equalsIgnoreCase(getMonth.getText())) {
@@ -127,7 +131,7 @@ public class FlightHubDriven {
     returnDate = driver.findElement(By.xpath("//input[@name ='seg1_date']"));
     returnDate.click();
     Thread.sleep(4000);
-
+    yearCheck();
     getMonth = driver.findElement(By.xpath("//div[@class = 'ui-datepicker-inline ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all']//span[@class = 'ui-datepicker-month']"));
 
     while (!monthMap.get(dataReturnDate.substring(3, 5)).equalsIgnoreCase(getMonth.getText())) {
@@ -147,6 +151,34 @@ public class FlightHubDriven {
     XpathAddress = "//div[@class = 'ui-datepicker-inline ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all']//a[contains(text(),'" +dayReturn+ "')]";
     driver.findElement(By.xpath(XpathAddress)).click();
 
+  }
+
+  public static void yearCheck() throws InterruptedException {
+    WebElement getYear = driver.findElement(By.xpath("//div[@id = 'datepicker']//span[@class = 'ui-datepicker-year']"));
+    String yeardate = dataDepartureDate.substring(6, 10);
+
+    while (!yeardate.equalsIgnoreCase(getYear.getText())) {
+      driver.findElement(By.xpath("//div[@class = 'ui-datepicker-inline ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all']//a[@data-handler = 'next']")).click();
+      Thread.sleep(1000);
+      try {
+        getYear = driver.findElement(By.xpath("//div[@class = 'ui-datepicker-inline ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all']//span[@class = 'ui-datepicker-month']"));
+
+      } catch (org.openqa.selenium.StaleElementReferenceException ex) {
+        System.out.println(" Catch error !!!");
+        getYear = driver.findElement(By.xpath("//div[@class = 'ui-datepicker-inline ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all']//span[@class = 'ui-datepicker-month']"));
+      }
+    }
+  }
+
+  public static void clickAndWaitFlightSearchLoading(){
+    driver.findElement(By.id("btn-search-flight")).click();
+
+    // Wait till the next page full load
+    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(40));
+    wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//div[@class = 'container-progress-bar']")));
+
+    // WebElement selectbutton =
+    driver.findElement(By.xpath("//a[@class = 'tab-btn cheapest']")).click();
   }
 
 }
