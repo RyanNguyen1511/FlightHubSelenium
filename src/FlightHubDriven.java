@@ -40,6 +40,7 @@ public class FlightHubDriven {
   static String dataDepartureDate;
   static String dataReturnDate;
 
+  static String[][] flightlist = new String[25][];
 
   public static void main(String[] args) throws InterruptedException {
     dataDepartureLocation = dataHolder.getDepatureLocation();;
@@ -184,47 +185,64 @@ public class FlightHubDriven {
   }
 
   public static void listCheapestFlight(){
+
+
     WebElement flightpackages = driver.findElement(By.xpath("//ul[@class = 'exp-container-flight-package']"));
-    List<WebElement> flight = flightpackages.findElements(By.cssSelector("li"));
 
-    WebElement totalprice;
-    WebElement DepartureTime;
-    WebElement ReturnArrivalTime;
-    WebElement DepartureDate;
-    WebElement ReturnArrivalDate;
-    WebElement DeparturePlace;
-    WebElement ReturnPlace;
-    WebElement linkdetail;
-    for (WebElement list: flight){
+    List<WebElement> totalprice;
+    List<WebElement> DepartureTime;
+    List<WebElement> DeparturePlace;
+    List<WebElement> DepartureDate;
+    List<WebElement> ReturnArrivalTime;
+    List<WebElement> ReturnArrivalDate;
+    List<WebElement> ReturnPlace;
+    List<WebElement> linkdetail;
+
+    totalprice = flightpackages.findElements(By.xpath("//li[@class = 'package']//span[@class = 'total-price']"));
+    int count = 0;
+    for (WebElement list: totalprice){
+      flightlist[count][0]=list.getText();
+      count++;
+    }
+
+    DepartureTime = flightpackages.findElements(By.xpath("//li[@class = 'package']//li[@class = 'flight-time']"));
+    count =0;
+    for (WebElement list: DepartureTime){
+      flightlist[count][1]=list.getText();
+      count++;
+    }
+
+
+
+
       //LOCATE variable
-      totalprice = list.findElement(By.xpath("//span[@class = 'total-price']"));
 
-      DepartureTime = list.findElement(By.xpath("//li[@class = 'flight-time'][1]"));
-      ReturnArrivalTime = list.findElement(By.xpath("//div[@class = 'package-details-box flightDetails ']//div[@class = 'city-pair '][last()]//div[contains(@class, 'faredetails display-table')][last()]//li[@class = 'flight-time'][last()]"));
+//      DepartureTime = list.findElement(By.xpath("//li[@class = 'flight-time'][1]"));
+//      ReturnArrivalTime = list.findElement(By.xpath("//div[@class = 'package-details-box flightDetails ']//div[@class = 'city-pair '][last()]//div[contains(@class, 'faredetails display-table')][last()]//ul[last()]//li[@class = 'flight-time'][last()]"));
+//
+//      DepartureDate = list.findElement(By.xpath("//li[@class = 'flight-date '][1]"));
+//      ReturnArrivalDate = list.findElement(By.xpath("//div[@class = 'package-details-box flightDetails ']//div[@class = 'city-pair '][last()]//div[contains(@class, 'faredetails display-table')][last()]//ul[last()]//li[@class = 'flight-date'][last()]"));
+//
+//      DeparturePlace = list.findElement(By.xpath("//span[@class = 'hide-on-mobile'][1]"));
+//      ReturnPlace = list.findElement(By.xpath("//div[@class = 'package-details-box flightDetails ']//div[@class = 'city-pair '][last()]//div[contains(@class, 'faredetails display-table')][last()]//ul[last()]//span[@class = 'hide-on-mobile']"));
+//
+//      linkdetail = list.findElement(By.xpath("//a[@class = 'package-select']"));
+//
+//      System.out.println("------------------------------------- ");
+//      System.out.println("DEPARTURE: ");
+//      System.out.println("Departure Location: " + DeparturePlace.getText());
+//      System.out.println("Departure Day: " + DepartureDate.getText());
+//      System.out.println("Departure Time: " + DepartureTime.getText());
+//      System.out.println("RETURN: ");
+//      System.out.println("Return Location: " + ReturnPlace.getText());
+//      System.out.println("Return Day: " + ReturnArrivalDate.getText());
+//      System.out.println("Return Time: " + ReturnArrivalTime.getText());
+//      System.out.println("OVERVIEW: ");
 
-      DepartureDate = list.findElement(By.xpath("//li[@class = 'flight-date '][1]"));
-      ReturnArrivalDate = list.findElement(By.xpath("//div[@class = 'package-details-box flightDetails ']//div[@class = 'city-pair '][last()]//div[contains(@class, 'faredetails display-table')][last()]//li[@class = 'flight-date'][last()]"));
-
-      DeparturePlace = list.findElement(By.xpath("//span[@class = 'hide-on-mobile'][1]"));
-      ReturnPlace = list.findElement(By.xpath("//div[@class = 'package-details-box flightDetails ']//div[@class = 'city-pair '][last()]//div[contains(@class, 'faredetails display-table')][last()]//ul[last()]//span[@class = 'hide-on-mobile']"));
-
-      linkdetail = list.findElement(By.xpath("//a[@class = 'package-select']"));
-
-      System.out.println("------------------------------------- ");
-      System.out.println("DEPARTURE: ");
-      System.out.println("Departure Location: " + DeparturePlace.getText());
-      System.out.println("Departure Day: " + DepartureDate.getText());
-      System.out.println("Departure Time: " + DepartureTime.getText());
-      System.out.println("RETURN: ");
-      System.out.println("Return Location: " + ReturnPlace.getText());
-      System.out.println("Return Day: " + ReturnArrivalDate.getText());
-      System.out.println("Return Time: " + ReturnArrivalTime.getText());
-      System.out.println("OVERVIEW: ");
-      System.out.println("Total Price: " + totalprice.getText());
-      System.out.println("Link detail: " + linkdetail.getAttribute("href"));
+//      System.out.println("Link detail: " + linkdetail.getAttribute("href"));
 //      System.out.println("Text: " + list.getText());
 
-    }
+
   }
 
 }
