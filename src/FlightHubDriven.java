@@ -40,7 +40,7 @@ public class FlightHubDriven {
   static String dataDepartureDate;
   static String dataReturnDate;
 
-  static String[][] flightlist = new String[25][];
+static String[][] flightlist = new String[25][6];
 
   public static void main(String[] args) throws InterruptedException {
     dataDepartureLocation = dataHolder.getDepatureLocation();;
@@ -49,9 +49,9 @@ public class FlightHubDriven {
     dataReturnDate = dataHolder.getReturnDate();
 
     initializeWebDriver();
-//    GetLocation();
-//    datePicker();
-//    clickAndWaitFlightSearchLoading();
+    GetLocation();
+    datePicker();
+    clickAndWaitFlightSearchLoading();
     listCheapestFlight();
 
   }
@@ -60,13 +60,11 @@ public class FlightHubDriven {
     // initialize web driver with Chrome
     System.getProperty("webdriver.chrome.driver", "S:\\PERSONAL\\STUDY\\chromedriver.exe ");
     driver = new ChromeDriver();
-//    driver.navigate().to("https://www.flighthub.com/");
-    driver.navigate().to("https://www.flighthub.com/flight/search?num_adults=1&num_children=0&num_infants=0&num_infants_lap=0&seat_class=Economy&seg0_date=2023-03-12&seg0_from=YKA&seg0_to=YVR&seg1_date=2023-04-23&seg1_from=YVR&seg1_to=YKA&type=roundtrip&search_id=14a926cae2cc9723783ee2822a124abf");
+    driver.navigate().to("https://www.flighthub.com/");
+//    driver.navigate().to("https://www.flighthub.com/flight/search?num_adults=1&num_children=0&num_infants=0&num_infants_lap=0&seat_class=Economy&seg0_date=2023-03-12&seg0_from=YKA&seg0_to=YVR&seg1_date=2023-04-23&seg1_from=YVR&seg1_to=YKA&type=roundtrip&search_id=14a926cae2cc9723783ee2822a124abf");
     driver.manage().deleteAllCookies();
-//    driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+    driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
     driver.manage().window().maximize();
-    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(40));
-    wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//div[@class = 'container-progress-bar']")));
   }
 
   public static void GetLocation() throws InterruptedException {
@@ -182,6 +180,8 @@ public class FlightHubDriven {
 
     // WebElement selectbutton =
     driver.findElement(By.xpath("//a[@class = 'tab-btn cheapest']")).click();
+
+
   }
 
   public static void listCheapestFlight(){
@@ -191,58 +191,38 @@ public class FlightHubDriven {
 
     List<WebElement> totalprice;
     List<WebElement> DepartureTime;
-    List<WebElement> DeparturePlace;
     List<WebElement> DepartureDate;
     List<WebElement> ReturnArrivalTime;
     List<WebElement> ReturnArrivalDate;
-    List<WebElement> ReturnPlace;
     List<WebElement> linkdetail;
 
     totalprice = flightpackages.findElements(By.xpath("//li[@class = 'package']//span[@class = 'total-price']"));
-    int count = 0;
-    for (WebElement list: totalprice){
-      flightlist[count][0]=list.getText();
-      count++;
-    }
-
     DepartureTime = flightpackages.findElements(By.xpath("//li[@class = 'package']//li[@class = 'flight-time']"));
-    count =0;
-    for (WebElement list: DepartureTime){
-      flightlist[count][1]=list.getText();
-      count++;
+    DepartureDate = flightpackages.findElements(By.xpath("//li[@class = 'package']//li[@class = 'flight-date ']"));
+    ReturnArrivalTime = flightpackages.findElements(By.xpath("//li[@class = 'package']//div[@class = 'city-pair '][last()]//div[contains(@class, 'faredetails display-table')][last()]//ul[last()]//li[@class = 'flight-time'][last()]"));
+    ReturnArrivalDate = flightpackages.findElements(By.xpath("//li[@class = 'package']//div[@class = 'city-pair '][last()]//div[contains(@class, 'faredetails display-table')][last()]//ul[last()]//li[@class = 'flight-date'][last()] "));
+    linkdetail = flightpackages.findElements(By.xpath("//a[@class = 'package-select'] "));
+
+
+    for (int i = 0; i<25;i++){
+      flightlist[i][0] = totalprice.get(i).getText();
+      flightlist[i][1] = DepartureTime.get(i).getText();
+      flightlist[i][2] = DepartureDate.get(i).getText();
+      flightlist[i][3] = ReturnArrivalTime.get(i).getText();
+      flightlist[i][4] = ReturnArrivalDate.get(i).getText();
+      flightlist[i][5] = linkdetail.get(i).getAttribute("href");
     }
 
-
-
-
-      //LOCATE variable
-
-//      DepartureTime = list.findElement(By.xpath("//li[@class = 'flight-time'][1]"));
-//      ReturnArrivalTime = list.findElement(By.xpath("//div[@class = 'package-details-box flightDetails ']//div[@class = 'city-pair '][last()]//div[contains(@class, 'faredetails display-table')][last()]//ul[last()]//li[@class = 'flight-time'][last()]"));
-//
-//      DepartureDate = list.findElement(By.xpath("//li[@class = 'flight-date '][1]"));
-//      ReturnArrivalDate = list.findElement(By.xpath("//div[@class = 'package-details-box flightDetails ']//div[@class = 'city-pair '][last()]//div[contains(@class, 'faredetails display-table')][last()]//ul[last()]//li[@class = 'flight-date'][last()]"));
-//
-//      DeparturePlace = list.findElement(By.xpath("//span[@class = 'hide-on-mobile'][1]"));
-//      ReturnPlace = list.findElement(By.xpath("//div[@class = 'package-details-box flightDetails ']//div[@class = 'city-pair '][last()]//div[contains(@class, 'faredetails display-table')][last()]//ul[last()]//span[@class = 'hide-on-mobile']"));
-//
-//      linkdetail = list.findElement(By.xpath("//a[@class = 'package-select']"));
-//
-//      System.out.println("------------------------------------- ");
-//      System.out.println("DEPARTURE: ");
-//      System.out.println("Departure Location: " + DeparturePlace.getText());
-//      System.out.println("Departure Day: " + DepartureDate.getText());
-//      System.out.println("Departure Time: " + DepartureTime.getText());
-//      System.out.println("RETURN: ");
-//      System.out.println("Return Location: " + ReturnPlace.getText());
-//      System.out.println("Return Day: " + ReturnArrivalDate.getText());
-//      System.out.println("Return Time: " + ReturnArrivalTime.getText());
-//      System.out.println("OVERVIEW: ");
-
-//      System.out.println("Link detail: " + linkdetail.getAttribute("href"));
-//      System.out.println("Text: " + list.getText());
+    System.out.printf("%-21s %-26s %-20s %-25s %-28s %-22s %n", "Price", "Departure Time", "Departure Date", "Return Arrival Time", "Return Arrival Date", "link");
+    for (int i = 0; i<flightlist.length; i++){
+      for (int j = 0; j<flightlist[i].length;j++){
+        System.out.printf("%-25s",flightlist[i][j]);
+      }
+      System.out.println("\n");
+    }
 
 
   }
 
 }
+
