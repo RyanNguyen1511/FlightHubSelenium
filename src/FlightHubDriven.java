@@ -52,6 +52,7 @@ static String[][] flightlist = new String[25][6];
     GetLocation();
     datePicker();
     clickAndWaitFlightSearchLoading();
+
     listCheapestFlight();
 
   }
@@ -180,7 +181,7 @@ static String[][] flightlist = new String[25][6];
 
     // WebElement selectbutton =
     driver.findElement(By.xpath("//a[@class = 'tab-btn cheapest']")).click();
-
+    wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class = 'flights-results-wrap']")));
 
   }
 
@@ -203,16 +204,25 @@ static String[][] flightlist = new String[25][6];
     ReturnArrivalDate = flightpackages.findElements(By.xpath("//li[@class = 'package']//div[@class = 'city-pair '][last()]//div[contains(@class, 'faredetails display-table')][last()]//ul[last()]//li[@class = 'flight-date'][last()] "));
     linkdetail = flightpackages.findElements(By.xpath("//a[@class = 'package-select'] "));
 
-
-    for (int i = 0; i<25;i++){
-      flightlist[i][0] = totalprice.get(i).getText();
-      flightlist[i][1] = DepartureTime.get(i).getText();
-      flightlist[i][2] = DepartureDate.get(i).getText();
-      flightlist[i][3] = ReturnArrivalTime.get(i).getText();
-      flightlist[i][4] = ReturnArrivalDate.get(i).getText();
-      flightlist[i][5] = linkdetail.get(i).getAttribute("href");
+    try {
+      for (int i = 0; i < 25; i++) {
+        flightlist[i][0] = totalprice.get(i).getText();
+        flightlist[i][1] = DepartureTime.get(i).getText();
+        flightlist[i][2] = DepartureDate.get(i).getText();
+        flightlist[i][3] = ReturnArrivalTime.get(i).getText();
+        flightlist[i][4] = ReturnArrivalDate.get(i).getText();
+        flightlist[i][5] = linkdetail.get(i).getAttribute("href");
+      }
+    } catch (org.openqa.selenium.StaleElementReferenceException ex) {
+      for (int i = 0; i < 25; i++) {
+        flightlist[i][0] = totalprice.get(i).getText();
+        flightlist[i][1] = DepartureTime.get(i).getText();
+        flightlist[i][2] = DepartureDate.get(i).getText();
+        flightlist[i][3] = ReturnArrivalTime.get(i).getText();
+        flightlist[i][4] = ReturnArrivalDate.get(i).getText();
+        flightlist[i][5] = linkdetail.get(i).getAttribute("href");
+      }
     }
-
     System.out.printf("%-21s %-26s %-20s %-25s %-28s %-22s %n", "Price", "Departure Time", "Departure Date", "Return Arrival Time", "Return Arrival Date", "link");
     for (int i = 0; i<flightlist.length; i++){
       for (int j = 0; j<flightlist[i].length;j++){
